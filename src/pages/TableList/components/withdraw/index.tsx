@@ -15,6 +15,7 @@ import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import type { FormValueType } from './UpdateForm';
 import UpdateForm from './UpdateForm';
+// import styles from './index.less';
 
 /**
  * @en-US Add node
@@ -83,7 +84,7 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const WithdrawList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -139,10 +140,42 @@ const TableList: React.FC = () => {
       title: (
         <FormattedMessage
           id="pages.searchTable.titleCallNo"
-          defaultMessage="Number of service calls"
+          defaultMessage="금액"
         />
       ),
       dataIndex: 'callNo',
+      sorter: true,
+      hideInForm: true,
+      renderText: (val: string) =>
+        `${val}${intl.formatMessage({
+          id: 'pages.searchTable.tenThousand',
+          defaultMessage: ' 万 ',
+        })}`,
+    },
+    {
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.account"
+          defaultMessage="계좌번호"
+        />
+      ),
+      dataIndex: 'accountNo',
+      sorter: true,
+      hideInForm: true,
+      renderText: (val: string) =>
+        `${val}${intl.formatMessage({
+          id: 'pages.searchTable.tenThousand',
+          defaultMessage: ' 万 ',
+        })}`,
+    },
+    {
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.bank"
+          defaultMessage="은행"
+        />
+      ),
+      dataIndex: 'bank',
       sorter: true,
       hideInForm: true,
       renderText: (val: string) =>
@@ -218,52 +251,29 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleFinishAt"
-          defaultMessage="Last scheduled time"
-        />
-      ),
-      sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: 'Please enter the reason for the exception!',
-              })}
-            />
-          );
-        }
-        return defaultRender(item);
-      },
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="withdrawConfig"
           onClick={() => {
             handleUpdateModalVisible(true);
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          <FormattedMessage id="pages.searchTable.withdrawConfig" defaultMessage="확인" />
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
+        <a
+        key="withdrawCancel"
+        onClick={() => {
+          handleUpdateModalVisible(true);
+          setCurrentRow(record);
+        }}
+      >
           <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
-            defaultMessage="Subscribe to alerts"
+            id="pages.searchTable.WithdrawCancel"
+            defaultMessage="취소"
           />
         </a>,
       ],
@@ -425,4 +435,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default WithdrawList;

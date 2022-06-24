@@ -15,6 +15,7 @@ import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import type { FormValueType } from './UpdateForm';
 import UpdateForm from './UpdateForm';
+import styles from './index.less';
 
 /**
  * @en-US Add node
@@ -83,7 +84,7 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   }
 };
 
-const TableList: React.FC = () => {
+const DepositList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
@@ -124,6 +125,7 @@ const TableList: React.FC = () => {
               setCurrentRow(entity);
               setShowDetail(true);
             }}
+            className={styles.content}
           >
             {dom}
           </a>
@@ -257,15 +259,16 @@ const TableList: React.FC = () => {
             handleUpdateModalVisible(true);
             setCurrentRow(record);
           }}
+          className={styles.content}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration"/>
         </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
-            defaultMessage="Subscribe to alerts"
-          />
-        </a>,
+        // <a key="subscribeAlert" href="https://procomponents.ant.design/">
+        //   <FormattedMessage
+        //     id="pages.searchTable.subscribeAlert"
+        //     defaultMessage="Subscribe to alerts"
+        //   />
+        // </a>,
       ],
     },
   ];
@@ -421,8 +424,8 @@ const TableList: React.FC = () => {
         )}
       </Drawer>
       {/* </PageContainer> */}
-    </div>
+      </div>
   );
 };
 
-export default TableList;
+export default DepositList;

@@ -4,7 +4,7 @@ import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 
 export const Dashboard = () => {
-  const [selectDeposit, setDeposit] = useState(false);
+  const [selectDeposit, setDeposit] = useState(true);
 
   const handleChange = () => {
     if (selectDeposit) {
