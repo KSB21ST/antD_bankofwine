@@ -4,7 +4,7 @@ import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-desi
 import {
   FooterToolbar,
   ModalForm,
-  PageContainer,
+  // PageContainer,
   ProDescriptions,
   ProFormText,
   ProFormTextArea,
@@ -13,8 +13,8 @@ import {
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
-import type { FormValueType } from './components/UpdateForm';
-import UpdateForm from './components/UpdateForm';
+import type { FormValueType } from './UpdateForm';
+import UpdateForm from './UpdateForm';
 
 /**
  * @en-US Add node
@@ -218,6 +218,35 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.titleFinishAt"
+          defaultMessage="Last scheduled time"
+        />
+      ),
+      sorter: true,
+      dataIndex: 'updatedAt',
+      valueType: 'dateTime',
+      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+        const status = form.getFieldValue('status');
+        if (`${status}` === '0') {
+          return false;
+        }
+        if (`${status}` === '3') {
+          return (
+            <Input
+              {...rest}
+              placeholder={intl.formatMessage({
+                id: 'pages.searchTable.exception',
+                defaultMessage: 'Please enter the reason for the exception!',
+              })}
+            />
+          );
+        }
+        return defaultRender(item);
+      },
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
@@ -242,7 +271,8 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
+    // <PageContainer>
+    <div>
       <ProTable<API.RuleListItem, API.PageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
@@ -390,7 +420,8 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
-    </PageContainer>
+      {/* </PageContainer> */}
+    </div>
   );
 };
 
