@@ -60,7 +60,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           desc: props.values.desc,
         }}
         title={intl.formatMessage({
-          id: 'pages.searchTable.updateForm.basicConfig',
+          id: 'pages.Table.updateForm.basicConfig',
           defaultMessage: '基本信息',
         })}
       >

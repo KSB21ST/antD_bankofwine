@@ -137,12 +137,7 @@ const WithdrawList: React.FC = () => {
       valueType: 'textarea',
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="금액"
-        />
-      ),
+      title: <FormattedMessage id="pages.searchTable.titleCallNo" defaultMessage="금액" />,
       dataIndex: 'callNo',
       sorter: true,
       hideInForm: true,
@@ -153,13 +148,19 @@ const WithdrawList: React.FC = () => {
         })}`,
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.account"
-          defaultMessage="계좌번호"
-        />
-      ),
+      title: <FormattedMessage id="pages.searchTable.account" defaultMessage="계좌번호" />,
       dataIndex: 'accountNo',
+      sorter: true,
+      hideInForm: true,
+      renderText: (val: string) =>
+        `${val}${intl.formatMessage({
+          id: 'pages.searchTable.tenThousand',
+          defaultMessage: ' 万 ',
+        })}`,
+    },
+    {
+      title: <FormattedMessage id="pages.searchTable.bank" defaultMessage="은행" />,
+      dataIndex: 'bank',
       sorter: true,
       hideInForm: true,
       renderText: (val: string) =>
@@ -171,18 +172,31 @@ const WithdrawList: React.FC = () => {
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.bank"
-          defaultMessage="은행"
+          id="pages.searchTable.titleUpdatedAt"
+          defaultMessage="Last scheduled time"
         />
       ),
-      dataIndex: 'bank',
       sorter: true,
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
+      dataIndex: 'updatedAt',
+      valueType: 'dateTime',
+      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+        const status = form.getFieldValue('status');
+        if (`${status}` === '0') {
+          return false;
+        }
+        if (`${status}` === '3') {
+          return (
+            <Input
+              {...rest}
+              placeholder={intl.formatMessage({
+                id: 'pages.searchTable.exception',
+                defaultMessage: 'Please enter the reason for the exception!',
+              })}
+            />
+          );
+        }
+        return defaultRender(item);
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
@@ -222,36 +236,7 @@ const WithdrawList: React.FC = () => {
       },
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="Last scheduled time"
-        />
-      ),
-      sorter: true,
-      dataIndex: 'updatedAt',
-      valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
-                defaultMessage: 'Please enter the reason for the exception!',
-              })}
-            />
-          );
-        }
-        return defaultRender(item);
-      },
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption2" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -265,16 +250,13 @@ const WithdrawList: React.FC = () => {
           <FormattedMessage id="pages.searchTable.withdrawConfig" defaultMessage="확인" />
         </a>,
         <a
-        key="withdrawCancel"
-        onClick={() => {
-          handleUpdateModalVisible(true);
-          setCurrentRow(record);
-        }}
-      >
-          <FormattedMessage
-            id="pages.searchTable.WithdrawCancel"
-            defaultMessage="취소"
-          />
+          key="withdrawCancel"
+          onClick={() => {
+            handleUpdateModalVisible(true);
+            setCurrentRow(record);
+          }}
+        >
+          <FormattedMessage id="pages.searchTable.WithdrawCancel" defaultMessage="취소" />
         </a>,
       ],
     },

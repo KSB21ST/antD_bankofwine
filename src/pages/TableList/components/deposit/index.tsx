@@ -13,9 +13,9 @@ import {
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
+import styles from './index.less';
 import type { FormValueType } from './UpdateForm';
 import UpdateForm from './UpdateForm';
-import styles from './index.less';
 
 /**
  * @en-US Add node
@@ -154,43 +154,6 @@ const DepositList: React.FC = () => {
         })}`,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.default"
-              defaultMessage="Shut down"
-            />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
-            />
-          ),
-          status: 'Error',
-        },
-      },
-    },
-    {
       title: (
         <FormattedMessage
           id="pages.searchTable.titleUpdatedAt"
@@ -249,6 +212,40 @@ const DepositList: React.FC = () => {
       },
     },
     {
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      dataIndex: 'status',
+      hideInForm: true,
+      valueEnum: {
+        0: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
+          ),
+          status: 'Default',
+        },
+        1: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
+          ),
+          status: 'Processing',
+        },
+        2: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
+          ),
+          status: 'Success',
+        },
+        3: {
+          text: (
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.abnormal"
+              defaultMessage="Abnormal"
+            />
+          ),
+          status: 'Error',
+        },
+      },
+    },
+    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
@@ -261,7 +258,7 @@ const DepositList: React.FC = () => {
           }}
           className={styles.content}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration"/>
+          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
         </a>,
         // <a key="subscribeAlert" href="https://procomponents.ant.design/">
         //   <FormattedMessage
@@ -288,11 +285,12 @@ const DepositList: React.FC = () => {
         }}
         toolBarRender={() => [
           <Button
-            type="primary"
+            // type="primary"
             key="primary"
             onClick={() => {
               handleModalVisible(true);
             }}
+            className={styles.buttoncontent}
           >
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
@@ -424,7 +422,7 @@ const DepositList: React.FC = () => {
         )}
       </Drawer>
       {/* </PageContainer> */}
-      </div>
+    </div>
   );
 };
 
