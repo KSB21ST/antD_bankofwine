@@ -22,7 +22,7 @@ import UpdateForm from './UpdateForm';
  * @zh-CN 添加节点
  * @param fields
  */
-const handleAdd = async (fields: API.RuleListItem) => {
+const handleAdd = async (fields: API.WithdrawListItem) => {
   const hide = message.loading('正在添加');
   try {
     await addRule({ ...fields });
@@ -132,7 +132,7 @@ const WithdrawList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="신청인" />,
       dataIndex: 'desc',
       valueType: 'textarea',
     },

@@ -51,7 +51,7 @@ export async function rule(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/rule', {
+  return request<API.RuleList>('/api/rule2', {
     method: 'GET',
     params: {
       ...params,
@@ -59,6 +59,24 @@ export async function rule(
     ...(options || {}),
   });
 }
+
+export async function depositRule(
+  params: {
+    current?: number;
+    pageSize?: number;
+  },
+  options?: { [key: string]: any },
+) {
+  console.log("in depositRule");
+  return request<API.DepositList>('/api/deposit', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(options?: { [key: string]: any }) {

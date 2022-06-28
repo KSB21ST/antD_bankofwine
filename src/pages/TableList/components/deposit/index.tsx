@@ -1,13 +1,13 @@
-import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { removeRule, updateRule, depositRule, rule } from '@/services/ant-design-pro/api';
+// import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   FooterToolbar,
-  ModalForm,
+  // ModalForm,
   // PageContainer,
   ProDescriptions,
-  ProFormText,
-  ProFormTextArea,
+  // ProFormText,
+  // ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
@@ -22,19 +22,19 @@ import UpdateForm from './UpdateForm';
  * @zh-CN 添加节点
  * @param fields
  */
-const handleAdd = async (fields: API.RuleListItem) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('Added successfully');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Adding failed, please try again!');
-    return false;
-  }
-};
+// const handleAdd = async (fields: API.DepositListItem) => {
+//   const hide = message.loading('正在添加');
+//   try {
+//     await addRule({ ...fields });
+//     hide();
+//     message.success('Added successfully');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Adding failed, please try again!');
+//     return false;
+//   }
+// };
 
 /**
  * @en-US Update node
@@ -67,7 +67,7 @@ const handleUpdate = async (fields: FormValueType) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -89,7 +89,7 @@ const DepositList: React.FC = () => {
    * @en-US Pop-up window of new window
    * @zh-CN 新建窗口的弹窗
    *  */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  // const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /**
    * @en-US The pop-up window of the distribution update window
    * @zh-CN 分布更新窗口的弹窗
@@ -99,8 +99,8 @@ const DepositList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
 
   /**
    * @en-US International configuration
@@ -108,7 +108,7 @@ const DepositList: React.FC = () => {
    * */
   const intl = useIntl();
 
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<API.DepositListItem>[] = [
     {
       title: (
         <FormattedMessage
@@ -116,7 +116,7 @@ const DepositList: React.FC = () => {
           defaultMessage="Rule name"
         />
       ),
-      dataIndex: 'name',
+      dataIndex: 'uuid',
       tip: 'The rule name is the unique key',
       render: (dom, entity) => {
         return (
@@ -133,18 +133,18 @@ const DepositList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
-      dataIndex: 'desc',
+      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="신청인" />,
+      dataIndex: 'toAccountHolder',
       valueType: 'textarea',
     },
     {
       title: (
         <FormattedMessage
           id="pages.searchTable.titleCallNo"
-          defaultMessage="Number of service calls"
+          defaultMessage="금액"
         />
       ),
-      dataIndex: 'callNo',
+      dataIndex: 'depositRequestAmount',
       sorter: true,
       hideInForm: true,
       renderText: (val: string) =>
@@ -157,7 +157,7 @@ const DepositList: React.FC = () => {
       title: (
         <FormattedMessage
           id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="Last scheduled time"
+          defaultMessage="신청일시"
         />
       ),
       sorter: true,
@@ -186,11 +186,11 @@ const DepositList: React.FC = () => {
       title: (
         <FormattedMessage
           id="pages.searchTable.titleFinishAt"
-          defaultMessage="Last scheduled time"
+          defaultMessage="만료일시"
         />
       ),
       sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'transactionExpiryDt',
       valueType: 'dateTime',
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
@@ -213,32 +213,32 @@ const DepositList: React.FC = () => {
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'status',
+      dataIndex: 'isActive',
       hideInForm: true,
       valueEnum: {
         0: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
           ),
-          status: 'Default',
+          status: 'complete',
         },
         1: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
           ),
-          status: 'Processing',
+          status: 'pending',
         },
         2: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
           ),
-          status: 'Success',
+          status: 'cancelled',
         },
         3: {
           text: (
             <FormattedMessage
               id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
+              defaultMessage="abnormal"
             />
           ),
           status: 'Error',
@@ -251,7 +251,7 @@ const DepositList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <a
-          key="config"
+          key="toBankName"
           onClick={() => {
             handleUpdateModalVisible(true);
             setCurrentRow(record);
@@ -273,7 +273,7 @@ const DepositList: React.FC = () => {
   return (
     // <PageContainer>
     <div>
-      <ProTable<API.RuleListItem, API.PageParams>
+      <ProTable<API.DepositListItem, API.PageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
@@ -283,19 +283,19 @@ const DepositList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          <Button
-            // type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-            className={styles.buttoncontent}
-          >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          </Button>,
-        ]}
-        request={rule}
+        // toolBarRender={() => [
+        //   <Button
+        //     // type="primary"
+        //     key="primary"
+        //     onClick={() => {
+        //       handleModalVisible(true);
+        //     }}
+        //     className={styles.buttoncontent}
+        //   >
+        //     {/* <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" /> */}
+        //   </Button>,
+        // ]}
+        request={depositRule}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -342,7 +342,7 @@ const DepositList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
+      {/* <ModalForm
         title={intl.formatMessage({
           id: 'pages.searchTable.createForm.newRule',
           defaultMessage: 'New rule',
@@ -376,7 +376,7 @@ const DepositList: React.FC = () => {
           name="name"
         />
         <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
+      </ModalForm> */}
       <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);

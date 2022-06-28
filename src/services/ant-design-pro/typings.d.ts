@@ -49,9 +49,54 @@ declare namespace API {
     progress?: number;
   };
 
+  type DepositListItem = {
+    isActive?: boolean;
+    isDelete?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+    uuid?: string;
+    depositCode?: string;
+    depositTransactionType?: string;
+    depositRequestAmount?: number;
+    depositAmount?: number;
+    transactionStatus?: string;
+    transactionRequestAt?: string;
+    transactionExpiryDt?: string;
+    transactionApproveAt?: string;
+    depositAt?: string;
+    fromAccountHolder?: string;
+    toAccountHolder?: string;
+    toBankName?: string;
+    toBankAccountNumber?: string;
+    adminMemo?: string;
+    description?: string;
+  };
+
+
+  type WithdrawListItem = {
+    key?: number;
+    disabled?: boolean;
+    href?: string;
+    avatar?: string;
+    name?: string;
+    owner?: string;
+    desc?: string;
+    callNo?: number;
+    status?: number;
+    updatedAt?: string;
+    createdAt?: string;
+    progress?: number;
+  };
+
   type RuleList = {
     data?: RuleListItem[];
     /** 列表的内容总数 */
+    total?: number;
+    success?: boolean;
+  };
+
+  type DepositList = {
+    data?: DepositListItem[];
     total?: number;
     success?: boolean;
   };

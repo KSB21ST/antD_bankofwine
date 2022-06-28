@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
 import moment from 'moment';
 import { parse } from 'url';
+// import { request } from 'umi';
+import axios from 'axios';
+
+
+const requestURL = 'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api';
+const depositURL = '/admin/deposit/?type=DEPOSIT';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
-  const tableListDataSource: API.RuleListItem[] = [];
+  const tableListDataSource: API.DepositListItem[] = [];
 
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
@@ -22,7 +28,7 @@ const genList = (current: number, pageSize: number) => {
       callNo: Math.floor(Math.random() * 1000),
       status: Math.floor(Math.random() * 10) % 4,
       updatedAt: moment().format('YYYY-MM-DD'),
-      createdAt: moment().format('YYYY-MM-DD'),
+      finishedAt: moment().format('YYYY-MM-DD'),
       progress: Math.ceil(Math.random() * 100),
     });
   }
@@ -39,7 +45,7 @@ function getRule(req: Request, res: Response, u: string) {
   }
   const { current = 1, pageSize = 10 } = req.query;
   const params = parse(realUrl, true).query as unknown as API.PageParams &
-    API.RuleListItem & {
+    API.DepositListItem & {
       sorter: any;
       filter: any;
     };
@@ -99,9 +105,8 @@ function getRule(req: Request, res: Response, u: string) {
     pageSize,
     current: parseInt(`${params.current}`, 10) || 1,
   };
-
   return res.json(result);
-}
+};
 
 function postRule(req: Request, res: Response, u: string, b: Request) {
   let realUrl = u;
@@ -168,7 +173,63 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
   res.json(result);
 }
 
+async function getDepositRule(req: Request, res: Response, u: string) {
+  console.log("Backend getDepositRule", requestURL.concat(depositURL));
+  axios.get(requestURL.concat(depositURL))
+      .then((response) => {
+          const dataSource : API.DepositListItem[] = [];
+          response.data['data']['transactions'].forEach((val : API.DepositListItem)=>{
+              dataSource.push(val);
+          })
+          console.log(dataSource);
+          const result = {
+            data: dataSource,
+            total: 1,
+            success: true,
+          };
+          return res.json(result);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+  // request<API.DepositList>(requestURL.concat(depositURL), {
+  //   method: 'GET',
+  // })
+  // .then((data) => {
+  //   console.log('here1----------');
+  //   if(data['data'] === undefined){
+  //     return 
+  //   }
+  //   console.log('here2-------------');
+  //   const params = parse(u, true).query as unknown as API.PageParams &
+  //   API.DepositListItem & {
+  //     sorter: any;
+  //     filter: any;
+  //   };
+  //   console.log('here3---------------');
+  //   // const { current = 1, pageSize = 10 } = req.query;
+  //   console.log('here4');
+  //   const dataSource : API.DepositListItem[] = [];
+  //   dataSource.push(data['data']['transactions'][0]);
+  //   const result = {
+  //     data: dataSource,
+  //     total: 1,
+  //     success: true,
+  //   };
+  //   console.log("utile here \n\n");
+  //   return res.json(result);
+  // });
+  // const result = {
+  //   data: undefined,
+  //   total: 1,
+  //   success: true,
+  // };
+  // return res.json(result);
+// }
+
 export default {
-  'GET /api/rule': getRule,
+  'GET /api/rule2': getRule,
   'POST /api/rule': postRule,
+  'GET /api/deposit' : getDepositRule,
 };
