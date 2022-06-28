@@ -33,7 +33,7 @@ export const Dashboard = () => {
       )}
       {!selectDeposit && (
         <Box sx={{ width: '100%', p: 2 }} onClick={handleChange}>
-          <Button variant="contained" color="secondary" disableElevation>
+          <Button variant="contained" style={{ backgroundColor: '#CA0000' }}>
             View Deposit
           </Button>
           <Box sx={{ width: '45%', p: 1 }}>

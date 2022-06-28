@@ -1,15 +1,7 @@
 import { depositRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
 // import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
-import {
-  FooterToolbar,
-  // ModalForm,
-  // PageContainer,
-  ProDescriptions,
-  // ProFormText,
-  // ProFormTextArea,
-  ProTable,
-} from '@ant-design/pro-components';
+import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
@@ -102,6 +94,11 @@ const DepositList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
 
+  const handleDepositRequest = (e: any) => {
+    //checking code to backend
+    alert('정말 입금 확인 ㄱㄱ??');
+    console.log(e);
+  };
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -232,15 +229,17 @@ const DepositList: React.FC = () => {
     //   },
     // },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="입금 확인" />,
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [
+      // render: (_, record) => [
+      render: () => [
         <a
           key="toBankName"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
+          onClick={(e) => {
+            // handleUpdateModalVisible(true);
+            // setCurrentRow(record);
+            handleDepositRequest(e.target);
           }}
           className={styles.content}
         >
