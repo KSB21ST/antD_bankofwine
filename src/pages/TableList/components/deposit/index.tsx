@@ -1,4 +1,4 @@
-import { removeRule, updateRule, depositRule, rule } from '@/services/ant-design-pro/api';
+import { depositRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
 // import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -134,32 +134,17 @@ const DepositList: React.FC = () => {
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="신청인" />,
-      dataIndex: 'toAccountHolder',
+      dataIndex: 'fromAccountHolder',
       valueType: 'textarea',
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="금액"
-        />
-      ),
+      title: <FormattedMessage id="pages.searchTable.titleCallNo" defaultMessage="금액" />,
       dataIndex: 'depositRequestAmount',
       sorter: true,
       hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
-          defaultMessage="신청일시"
-        />
-      ),
+      title: <FormattedMessage id="pages.searchTable.titleUpdatedAt" defaultMessage="신청일시" />,
       sorter: true,
       dataIndex: 'updatedAt',
       valueType: 'dateTime',
@@ -183,12 +168,7 @@ const DepositList: React.FC = () => {
       },
     },
     {
-      title: (
-        <FormattedMessage
-          id="pages.searchTable.titleFinishAt"
-          defaultMessage="만료일시"
-        />
-      ),
+      title: <FormattedMessage id="pages.searchTable.titleFinishAt" defaultMessage="만료일시" />,
       sorter: true,
       dataIndex: 'transactionExpiryDt',
       valueType: 'dateTime',
@@ -212,39 +192,45 @@ const DepositList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'isActive',
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
+      dataIndex: 'transactionStatus',
+      sorter: true,
       hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
-          ),
-          status: 'complete',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
-          ),
-          status: 'pending',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
-          ),
-          status: 'cancelled',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="abnormal"
-            />
-          ),
-          status: 'Error',
-        },
-      },
     },
+    // {
+    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+    //   dataIndex: 'isActive',
+    //   hideInForm: true,
+    //   valueEnum: {
+    //     0: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
+    //       ),
+    //       status: 'complete',
+    //     },
+    //     1: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
+    //       ),
+    //       status: 'pending',
+    //     },
+    //     2: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
+    //       ),
+    //       status: 'cancelled',
+    //     },
+    //     3: {
+    //       text: (
+    //         <FormattedMessage
+    //           id="pages.searchTable.nameStatus.abnormal"
+    //           defaultMessage="abnormal"
+    //         />
+    //       ),
+    //       status: 'Error',
+    //     },
+    //   },
+    // },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',

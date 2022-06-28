@@ -1,4 +1,4 @@
-import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro/api';
+import { addRule, removeRule, updateRule, withdrawRule } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -22,7 +22,7 @@ import UpdateForm from './UpdateForm';
  * @zh-CN 添加节点
  * @param fields
  */
-const handleAdd = async (fields: API.WithdrawListItem) => {
+const handleAdd = async (fields: API.DepositListItem) => {
   const hide = message.loading('正在添加');
   try {
     await addRule({ ...fields });
@@ -116,8 +116,8 @@ const WithdrawList: React.FC = () => {
           defaultMessage="Rule name"
         />
       ),
-      dataIndex: 'name',
-      tip: 'The rule name is the unique key',
+      dataIndex: 'uuid',
+      tip: 'The uuid is the unique key',
       render: (dom, entity) => {
         return (
           <a
@@ -133,41 +133,36 @@ const WithdrawList: React.FC = () => {
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="신청인" />,
-      dataIndex: 'desc',
+      dataIndex: 'toAccountHolder',
       valueType: 'textarea',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleCallNo" defaultMessage="금액" />,
-      dataIndex: 'callNo',
+      dataIndex: 'depositRequestAmount',
       sorter: true,
       hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
+      // renderText: (val: string) =>
+      //   `${val}${intl.formatMessage({
+      //     id: 'pages.searchTable.tenThousand',
+      //     defaultMessage: ' 万 ',
+      //   })}`,
     },
     {
       title: <FormattedMessage id="pages.searchTable.account" defaultMessage="계좌번호" />,
-      dataIndex: 'accountNo',
+      dataIndex: 'fromBankAccountNumber',
       sorter: true,
       hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
+      // renderText: (val: string) =>
+      //   `${val}${intl.formatMessage({
+      //     id: 'pages.searchTable.tenThousand',
+      //     defaultMessage: ' 万 ',
+      //   })}`,
     },
     {
       title: <FormattedMessage id="pages.searchTable.bank" defaultMessage="은행" />,
-      dataIndex: 'bank',
+      dataIndex: 'fromBankName',
       sorter: true,
       hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
     },
     {
       title: (
@@ -199,42 +194,48 @@ const WithdrawList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'status',
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
+      dataIndex: 'transactionStatus',
+      sorter: true,
       hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.default"
-              defaultMessage="Shut down"
-            />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
-            />
-          ),
-          status: 'Error',
-        },
-      },
     },
+    // {
+    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+    //   dataIndex: 'status',
+    //   hideInForm: true,
+    //   valueEnum: {
+    //     0: {
+    //       text: (
+    //         <FormattedMessage
+    //           id="pages.searchTable.nameStatus.default"
+    //           defaultMessage="Shut down"
+    //         />
+    //       ),
+    //       status: 'Default',
+    //     },
+    //     1: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
+    //       ),
+    //       status: 'Processing',
+    //     },
+    //     2: {
+    //       text: (
+    //         <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
+    //       ),
+    //       status: 'Success',
+    //     },
+    //     3: {
+    //       text: (
+    //         <FormattedMessage
+    //           id="pages.searchTable.nameStatus.abnormal"
+    //           defaultMessage="Abnormal"
+    //         />
+    //       ),
+    //       status: 'Error',
+    //     },
+    //   },
+    // },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption2" defaultMessage="Operating" />,
       dataIndex: 'option',
@@ -265,7 +266,7 @@ const WithdrawList: React.FC = () => {
   return (
     // <PageContainer>
     <div>
-      <ProTable<API.RuleListItem, API.PageParams>
+      <ProTable<API.DepositListItem, API.PageParams>
         headerTitle={intl.formatMessage({
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
@@ -286,7 +287,7 @@ const WithdrawList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={rule}
+        request={withdrawRule}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -342,7 +343,7 @@ const WithdrawList: React.FC = () => {
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
-          const success = await handleAdd(value as API.RuleListItem);
+          const success = await handleAdd(value as API.DepositListItem);
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -399,7 +400,7 @@ const WithdrawList: React.FC = () => {
         closable={false}
       >
         {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
+          <ProDescriptions<API.DepositListItem>
             column={2}
             title={currentRow?.name}
             request={async () => ({
@@ -408,7 +409,7 @@ const WithdrawList: React.FC = () => {
             params={{
               id: currentRow?.name,
             }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
+            columns={columns as ProDescriptionsItemProps<API.DepositListItem>[]}
           />
         )}
       </Drawer>

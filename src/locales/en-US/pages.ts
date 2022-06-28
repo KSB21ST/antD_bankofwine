@@ -31,7 +31,7 @@ export default {
   'pages.searchTable.createForm.newRule': 'New Rule',
   'pages.searchTable.updateForm.ruleConfig': 'Rule configuration',
   'pages.searchTable.updateForm.basicConfig': 'Basic Information',
-  'pages.searchTable.updateForm.ruleName.nameLabel': 'Rules',
+  'pages.searchTable.updateForm.ruleName.nameLabel': 'UUID',
   'pages.searchTable.updateForm.ruleName.nameRules': 'Please enter the rule name!',
   'pages.searchTable.updateForm.ruleDesc.descLabel': 'Rule Description',
   'pages.searchTable.updateForm.ruleDesc.descPlaceholder': 'Please enter at least five characters',
