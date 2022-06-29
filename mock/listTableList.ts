@@ -175,18 +175,49 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 async function getDepositRule(req: Request, res: Response, u: string) {
-  console.log('Backend getDepositRule', requestURL.concat(depositURL));
+  console.log('Backend getDepositRule', req.url);
   axios
     .get(requestURL.concat(depositURL))
     .then((response) => {
-      const dataSource: API.DepositListItem[] = [];
+      var dataSource: API.DepositListItem[] = [];
       response.data['data']['transactions'].forEach((val: API.DepositListItem) => {
         dataSource.push(val);
       });
-      // console.log(dataSource);
+      let realUrl = u;
+      if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
+        realUrl = req.url;
+      }
+      // const { current = 1, pageSize = 10 } = req.query;
+      const params = parse(realUrl, true).query as unknown as API.PageParams &
+        API.DepositListItem & {
+          sorter: any;
+          filter: any;
+        };
+
+        const keyValue = Object.keys(params).filter((value) => value != 'current' && value != 'pageSize' && params[value] != undefined);
+      if (keyValue.length > 0) {
+        console.log(keyValue);
+        // const newdata: API.DepositListItem[] = [];
+        const newdata = dataSource.filter((item) => {
+          var cnt = 0;
+          keyValue.some((key) => {
+            // console.log(item[key].toString())
+            if(params[key] === "" || params[key] === item[key].toString()){
+              cnt+= 1;
+            }
+          })
+          return cnt === keyValue.length;
+        });
+        const result = {
+          data: newdata,
+          total: newdata.length,
+          success: true,
+        };
+        return res.json(result);
+      }
       const result = {
         data: dataSource,
-        total: response.data['data']['transactions'].length,
+        total: dataSource.length,
         success: true,
       };
       return res.json(result);
@@ -205,7 +236,7 @@ async function getWithdrawRule(req: Request, res: Response, u: string) {
       response.data['data']['transactions'].forEach((val: API.DepositListItem) => {
         dataSource.push(val);
       });
-      console.log(dataSource);
+      // console.log(dataSource);
       const result = {
         data: dataSource,
         total: response.data['data']['transactions'].length,

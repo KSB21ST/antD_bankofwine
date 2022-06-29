@@ -188,46 +188,46 @@ const DepositList: React.FC = () => {
         return defaultRender(item);
       },
     },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
-      dataIndex: 'transactionStatus',
-      sorter: true,
-      hideInForm: true,
-    },
     // {
-    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-    //   dataIndex: 'isActive',
+    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
+    //   dataIndex: 'transactionStatus',
+    //   sorter: true,
     //   hideInForm: true,
-    //   valueEnum: {
-    //     0: {
-    //       text: (
-    //         <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
-    //       ),
-    //       status: 'complete',
-    //     },
-    //     1: {
-    //       text: (
-    //         <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
-    //       ),
-    //       status: 'pending',
-    //     },
-    //     2: {
-    //       text: (
-    //         <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
-    //       ),
-    //       status: 'cancelled',
-    //     },
-    //     3: {
-    //       text: (
-    //         <FormattedMessage
-    //           id="pages.searchTable.nameStatus.abnormal"
-    //           defaultMessage="abnormal"
-    //         />
-    //       ),
-    //       status: 'Error',
-    //     },
-    //   },
     // },
+    {
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      dataIndex: 'transactionStatus',
+      hideInForm: true,
+      valueEnum: {
+        'DEPOSIT_REQUEST_COMPLETE': {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
+          ),
+          status: 'Processing',
+        },
+        'DEPOSIT_REQUEST_PENDING': {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
+          ),
+          status: 'Success',
+        },
+        'DEPOSIT_REQUEST_CANCEL': {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
+          ),
+          status: 'Default',
+        },
+        3: {
+          text: (
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.abnormal"
+              defaultMessage="abnormal"
+            />
+          ),
+          status: 'Error',
+        },
+      },
+    },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="입금 확인" />,
       dataIndex: 'option',
@@ -245,12 +245,6 @@ const DepositList: React.FC = () => {
         >
           <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
         </a>,
-        // <a key="subscribeAlert" href="https://procomponents.ant.design/">
-        //   <FormattedMessage
-        //     id="pages.searchTable.subscribeAlert"
-        //     defaultMessage="Subscribe to alerts"
-        //   />
-        // </a>,
       ],
     },
   ];

@@ -1,5 +1,5 @@
 import { addRule, removeRule, updateRule, withdrawRule } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+// import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
   FooterToolbar,
@@ -277,15 +277,15 @@ const WithdrawList: React.FC = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          </Button>,
+          // <Button
+          //   type="primary"
+          //   key="primary"
+          //   onClick={() => {
+          //     handleModalVisible(true);
+          //   }}
+          // >
+          //   <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+          // </Button>,
         ]}
         request={withdrawRule}
         columns={columns}
