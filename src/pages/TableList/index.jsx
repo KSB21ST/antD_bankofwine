@@ -17,11 +17,11 @@ export const Dashboard = () => {
   return (
     <div>
       {selectDeposit && (
-        <Box sx={{ width: '100%', p: 2 }} onClick={handleChange}>
-          <Button variant="contained" disableElevation>
+        <Box sx={{ width: '100%', p: 2 }}>
+          <Button onClick={handleChange} variant="contained" disableElevation>
             View Withdraw
           </Button>
-          <Box sx={{ width: '45%', p: 1 }}>
+          <Box sx={{ width: '100%', p: 1 }}>
             예치금 입금 신청 목록입니다. 신한은행 100-035-890450 (블링커스 주식회사) 계좌에서
             신청인과
             <div>
@@ -32,11 +32,11 @@ export const Dashboard = () => {
         </Box>
       )}
       {!selectDeposit && (
-        <Box sx={{ width: '100%', p: 2 }} onClick={handleChange}>
-          <Button variant="contained" style={{ backgroundColor: '#CA0000' }}>
+        <Box sx={{ width: '100%', p: 2 }}>
+          <Button onClick={handleChange} variant="contained" style={{ backgroundColor: '#CA0000' }}>
             View Deposit
           </Button>
-          <Box sx={{ width: '45%', p: 1 }}>
+          <Box sx={{ width: '100%', p: 1 }}>
             예치금 출금 신청 목록입니다. 계좌번호를 확인 후 예금주명이 신청인과 일치하는지 확인
             부탁드립니다.
             <div>

@@ -56,11 +56,14 @@ import UpdateForm from './UpdateForm';
 const handleDepositRequest = async (record: any) => {
   //checking code to backend
   console.log(record.uuid);
+  const hide = message.loading('updating');
   try {
     await updateRule({
       uuid: record.uuid.toString(),
     });
-    alert('입금 확인이 완료되었습니다.');
+    hide();
+    location.reload();
+    message.success('Update is successful');
     return true;
   } catch (error) {
     message.error('error in allowing Deposit request!');
@@ -235,7 +238,7 @@ const DepositList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="입금 확인" />,
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [
+      render: (_, record) => record.transactionStatus === 'DEPOSIT_REQUEST_PENDING' && [
         <a
           key="toBankName"
           onClick={() => {

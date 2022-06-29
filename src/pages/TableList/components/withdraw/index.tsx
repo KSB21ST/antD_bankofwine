@@ -1,4 +1,4 @@
-import { addRule, removeRule, updateRule, withdrawRule } from '@/services/ant-design-pro/api';
+import { addRule, removeRule, withdrawRule } from '@/services/ant-design-pro/api';
 // import { PlusOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import {
@@ -13,7 +13,7 @@ import {
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
-import type { FormValueType } from './UpdateForm';
+// import type { FormValueType } from './UpdateForm';
 import UpdateForm from './UpdateForm';
 // import styles from './index.less';
 
@@ -42,24 +42,24 @@ const handleAdd = async (fields: API.DepositListItem) => {
  *
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
+// const handleUpdate = async (fields: FormValueType) => {
+//   const hide = message.loading('Configuring');
+//   try {
+//     await updateRule({
+//       name: fields.name,
+//       desc: fields.desc,
+//       key: fields.key,
+//     });
+//     hide();
 
-    message.success('Configuration is successful');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Configuration failed, please try again!');
-    return false;
-  }
-};
+//     message.success('Configuration is successful');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Configuration failed, please try again!');
+//     return false;
+//   }
+// };
 
 /**
  *  Delete node
