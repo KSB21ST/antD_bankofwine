@@ -6,7 +6,7 @@ import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
-import type { FormValueType } from './UpdateForm';
+// import type { FormValueType } from './UpdateForm';
 import UpdateForm from './UpdateForm';
 
 /**
@@ -34,21 +34,36 @@ import UpdateForm from './UpdateForm';
  *
  * @param fields
  */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('Configuring');
+// const handleUpdate = async (fields: FormValueType) => {
+//   const hide = message.loading('Configuring');
+//   try {
+//     await updateRule({
+//       name: fields.name,
+//       desc: fields.desc,
+//       key: fiealds.key,
+//     });
+//     hide();
+
+//     message.success('Configuration is successful');
+//     return true;
+//   } catch (error) {
+//     hide();
+//     message.error('Configuration failed, please try again!');
+//     return false;
+//   }
+// };
+
+const handleDepositRequest = async (record: any) => {
+  //checking code to backend
+  console.log(record.uuid);
   try {
     await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
+      uuid: record.uuid.toString(),
     });
-    hide();
-
-    message.success('Configuration is successful');
+    alert('입금 확인이 완료되었습니다.');
     return true;
   } catch (error) {
-    hide();
-    message.error('Configuration failed, please try again!');
+    message.error('error in allowing Deposit request!');
     return false;
   }
 };
@@ -93,12 +108,6 @@ const DepositList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
-
-  const handleDepositRequest = (e: any) => {
-    //checking code to backend
-    alert('정말 입금 확인 ㄱㄱ??');
-    console.log(e);
-  };
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -131,7 +140,7 @@ const DepositList: React.FC = () => {
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="신청인" />,
-      dataIndex: 'fromAccountHolder',
+      dataIndex: 'toAccountHolder',
       valueType: 'textarea',
     },
     {
@@ -188,30 +197,24 @@ const DepositList: React.FC = () => {
         return defaultRender(item);
       },
     },
-    // {
-    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
-    //   dataIndex: 'transactionStatus',
-    //   sorter: true,
-    //   hideInForm: true,
-    // },
     {
       title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
       dataIndex: 'transactionStatus',
       hideInForm: true,
       valueEnum: {
-        'DEPOSIT_REQUEST_COMPLETE': {
+        DEPOSIT_REQUEST_COMPLETE: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
           ),
           status: 'Processing',
         },
-        'DEPOSIT_REQUEST_PENDING': {
+        DEPOSIT_REQUEST_PENDING: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
           ),
           status: 'Success',
         },
-        'DEPOSIT_REQUEST_CANCEL': {
+        DEPOSIT_REQUEST_CANCEL: {
           text: (
             <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
           ),
@@ -232,14 +235,13 @@ const DepositList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="입금 확인" />,
       dataIndex: 'option',
       valueType: 'option',
-      // render: (_, record) => [
-      render: () => [
+      render: (_, record) => [
         <a
           key="toBankName"
-          onClick={(e) => {
+          onClick={() => {
             // handleUpdateModalVisible(true);
             // setCurrentRow(record);
-            handleDepositRequest(e.target);
+            handleDepositRequest(record);
           }}
           className={styles.content}
         >
@@ -250,7 +252,6 @@ const DepositList: React.FC = () => {
   ];
 
   return (
-    // <PageContainer>
     <div>
       <ProTable<API.DepositListItem, API.PageParams>
         headerTitle={intl.formatMessage({
@@ -291,12 +292,8 @@ const DepositList: React.FC = () => {
               <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
               &nbsp;&nbsp;
               <span>
-                <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
-                  defaultMessage="Total number of service calls"
-                />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
+                <FormattedMessage id="pages.searchTable.totalServiceCalls" defaultMessage="금액" />{' '}
+                {selectedRowsState.reduce((pre, item) => pre + item.depositRequestAmount!, 0)}{' '}
               </span>
             </div>
           }
@@ -386,21 +383,20 @@ const DepositList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.name && (
-          <ProDescriptions<API.RuleListItem>
+        {currentRow?.uuid && (
+          <ProDescriptions<API.DepositListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.uuid}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.uuid,
             }}
-            columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
+            columns={columns as ProDescriptionsItemProps<API.DepositListItem>[]}
           />
         )}
       </Drawer>
-      {/* </PageContainer> */}
     </div>
   );
 };

@@ -141,22 +141,12 @@ const WithdrawList: React.FC = () => {
       dataIndex: 'depositRequestAmount',
       sorter: true,
       hideInForm: true,
-      // renderText: (val: string) =>
-      //   `${val}${intl.formatMessage({
-      //     id: 'pages.searchTable.tenThousand',
-      //     defaultMessage: ' 万 ',
-      //   })}`,
     },
     {
       title: <FormattedMessage id="pages.searchTable.account" defaultMessage="계좌번호" />,
       dataIndex: 'fromBankAccountNumber',
       sorter: true,
       hideInForm: true,
-      // renderText: (val: string) =>
-      //   `${val}${intl.formatMessage({
-      //     id: 'pages.searchTable.tenThousand',
-      //     defaultMessage: ' 万 ',
-      //   })}`,
     },
     {
       title: <FormattedMessage id="pages.searchTable.bank" defaultMessage="은행" />,
@@ -264,7 +254,6 @@ const WithdrawList: React.FC = () => {
   ];
 
   return (
-    // <PageContainer>
     <div>
       <ProTable<API.DepositListItem, API.PageParams>
         headerTitle={intl.formatMessage({
@@ -413,7 +402,6 @@ const WithdrawList: React.FC = () => {
           />
         )}
       </Drawer>
-      {/* </PageContainer> */}
     </div>
   );
 };

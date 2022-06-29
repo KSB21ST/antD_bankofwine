@@ -2,30 +2,6 @@
 /* eslint-disable */
 import { request } from 'umi';
 
-/** 获取当前的用户 GET /api/currentUser */
-// export async function currentUser(options?: { [key: string]: any }) {
-//   return request<{
-//     data: API.CurrentUser;
-//   }>('/api/currentUser', {
-//     method: 'GET',
-//     ...(options || {}),
-//   });
-// }
-
-// const API_KEY = 'AIzaSyBKEGFkNyAkMjQaMxYfdVMeHJS33HYQv0Y';
-
-// export async function currentUser(body: any) {
-//   return request(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     data: {
-//       ...body,
-//     },
-//   });
-// }
-
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/login/outLogin', {
@@ -107,9 +83,17 @@ export async function withdrawRule(
 }
 
 /** 新建规则 PUT /api/rule */
-export async function updateRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
-    method: 'PUT',
+export async function updateRule(
+  params: {
+    uuid?: string;
+  },
+  options?: { [key: string]: string },
+) {
+  return request<API.DepositListItem>('/api/deposit', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
     ...(options || {}),
   });
 }

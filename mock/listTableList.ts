@@ -5,9 +5,9 @@ import { parse } from 'url';
 import axios from 'axios';
 
 const requestURL =
-  'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api';
-const depositURL = '/admin/deposit/?type=DEPOSIT';
-const withdrawURL = '/admin/deposit/?type=WITHDRAW';
+  'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit/';
+const depositURL = '?type=DEPOSIT';
+const withdrawURL = '?type=WITHDRAW';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
@@ -194,18 +194,20 @@ async function getDepositRule(req: Request, res: Response, u: string) {
           filter: any;
         };
 
-        const keyValue = Object.keys(params).filter((value) => value != 'current' && value != 'pageSize' && params[value] != undefined);
+      const keyValue = Object.keys(params).filter(
+        (value) => value != 'current' && value != 'pageSize' && params[value] != undefined,
+      );
       if (keyValue.length > 0) {
-        console.log(keyValue);
+        // console.log(keyValue);
         // const newdata: API.DepositListItem[] = [];
         const newdata = dataSource.filter((item) => {
           var cnt = 0;
           keyValue.some((key) => {
             // console.log(item[key].toString())
-            if(params[key] === "" || params[key] === item[key].toString()){
-              cnt+= 1;
+            if (params[key] === '' || params[key] === item[key].toString()) {
+              cnt += 1;
             }
-          })
+          });
           return cnt === keyValue.length;
         });
         const result = {
@@ -249,9 +251,43 @@ async function getWithdrawRule(req: Request, res: Response, u: string) {
     });
 }
 
+async function postDepositRule(req: Request, res: Response, u: string, b: Request) {
+  let realUrl = u;
+  if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
+    realUrl = req.url;
+  }
+  const params = parse(realUrl, true).query;
+  if (params['uuid'] === undefined) {
+    return res.status(404);
+  }
+  const _uuid: string = params['uuid'].toString();
+  const _url = requestURL.concat(_uuid).concat('?txStatus=DEPOSIT_REQUEST_COMPLETE');
+  console.log('Backend updateRule ', _url);
+  axios
+    .patch(_url)
+    .then((response) => {
+      const dataSource: API.DepositListItem[] = [];
+      response.data['data']['transactions'].forEach((val: API.DepositListItem) => {
+        dataSource.push(val);
+      });
+      const result = {
+        data: dataSource,
+        total: response.data['data']['transactions'].length,
+        success: true,
+      };
+      return res.json(result);
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(404);
+    });
+  return res.status(404);
+}
+
 export default {
   'GET /api/rule2': getRule,
   'POST /api/rule': postRule,
   'GET /api/deposit': getDepositRule,
+  'POST /api/deposit': postDepositRule,
   'GET /api/withdraw': getWithdrawRule,
 };
