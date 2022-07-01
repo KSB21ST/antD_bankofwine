@@ -2,6 +2,11 @@
 /* eslint-disable */
 import { request } from 'umi';
 
+const requestURL =
+  'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit';
+const depositURL = '?type=DEPOSIT';
+const withdrawURL = '?type=WITHDRAW';
+
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/login/outLogin', {
@@ -65,6 +70,24 @@ export async function depositRule(
     ...(options || {}),
   });
 }
+
+// export async function depositRule(
+//   params: {
+//     current?: number;
+//     pageSize?: number;
+//   },
+//   options?: { [key: string]: any },
+// ) {
+//   return request<API.DepositList>(`${requestURL}/${depositURL}`, {
+//     method: 'GET',
+//     ...(options || {}),
+//   })
+//   .then((response) => {
+//     console.log(response);
+//     const temp = response.data;
+//     console.log(temp);
+//   })
+// }
 
 export async function withdrawRule(
   params: {

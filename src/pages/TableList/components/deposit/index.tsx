@@ -261,6 +261,7 @@ const DepositList: React.FC = () => {
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
         })}
+        className="protable"
         actionRef={actionRef}
         rowKey="key"
         search={{
