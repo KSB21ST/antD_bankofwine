@@ -1,64 +1,16 @@
-import { depositRule, removeRule, updateRule } from '@/services/ant-design-pro/api';
-// import { PlusOutlined } from '@ant-design/icons';
+import { removeRule } from '@/services/ant-design-pro/api';
+import { depositRule, updateDepositRule } from '@/services/ant-design-pro/deposit';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
-// import type { FormValueType } from './UpdateForm';
-import UpdateForm from './UpdateForm';
-
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
-// const handleAdd = async (fields: API.DepositListItem) => {
-//   const hide = message.loading('正在添加');
-//   try {
-//     await addRule({ ...fields });
-//     hide();
-//     message.success('Added successfully');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Adding failed, please try again!');
-//     return false;
-//   }
-// };
-
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
-// const handleUpdate = async (fields: FormValueType) => {
-//   const hide = message.loading('Configuring');
-//   try {
-//     await updateRule({
-//       name: fields.name,
-//       desc: fields.desc,
-//       key: fiealds.key,
-//     });
-//     hide();
-
-//     message.success('Configuration is successful');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Configuration failed, please try again!');
-//     return false;
-//   }
-// };
 
 const handleDepositRequest = async (record: any) => {
-  //checking code to backend
-  console.log(record.uuid);
   const hide = message.loading('updating');
   try {
-    await updateRule({
+    await updateDepositRule({
       uuid: record.uuid.toString(),
     });
     hide();
@@ -95,17 +47,6 @@ const handleRemove = async (selectedRows: API.DepositListItem[]) => {
 };
 
 const DepositList: React.FC = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  // const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
@@ -238,19 +179,18 @@ const DepositList: React.FC = () => {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="입금 확인" />,
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => record.transactionStatus === 'DEPOSIT_REQUEST_PENDING' && [
-        <a
-          key="toBankName"
-          onClick={() => {
-            // handleUpdateModalVisible(true);
-            // setCurrentRow(record);
-            handleDepositRequest(record);
-          }}
-          className={styles.content}
-        >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
-        </a>,
-      ],
+      render: (_, record) =>
+        record.transactionStatus === 'DEPOSIT_REQUEST_PENDING' && [
+          <a
+            key="toBankName"
+            onClick={() => {
+              handleDepositRequest(record);
+            }}
+            className={styles.content}
+          >
+            <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          </a>,
+        ],
     },
   ];
 
@@ -261,24 +201,11 @@ const DepositList: React.FC = () => {
           id: 'pages.searchTable.title',
           defaultMessage: 'Enquiry form',
         })}
-        className="protable"
         actionRef={actionRef}
         rowKey="key"
         search={{
           labelWidth: 120,
         }}
-        // toolBarRender={() => [
-        //   <Button
-        //     // type="primary"
-        //     key="primary"
-        //     onClick={() => {
-        //       handleModalVisible(true);
-        //     }}
-        //     className={styles.buttoncontent}
-        //   >
-        //     {/* <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" /> */}
-        //   </Button>,
-        // ]}
         request={depositRule}
         columns={columns}
         rowSelection={{
@@ -286,6 +213,7 @@ const DepositList: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        className={styles.protable}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
@@ -322,62 +250,6 @@ const DepositList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-      {/* <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
-        width="400px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.RuleListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm> */}
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
-
       <Drawer
         width={600}
         visible={showDetail}

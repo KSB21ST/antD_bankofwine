@@ -1,8 +1,7 @@
+import axios from 'axios';
 import { Request, Response } from 'express';
 import moment from 'moment';
 import { parse } from 'url';
-// import { request } from 'umi';
-import axios from 'axios';
 
 const requestURL =
   'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit/';

@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import { login, currentUser } from '@/services/ant-design-pro/api2';
+import { login } from '@/services/ant-design-pro/login';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { Alert, message } from 'antd';

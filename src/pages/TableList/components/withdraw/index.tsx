@@ -1,73 +1,49 @@
-import { addRule, removeRule, withdrawRule } from '@/services/ant-design-pro/api';
-// import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { removeRule } from '@/services/ant-design-pro/api';
 import {
-  FooterToolbar,
-  ModalForm,
-  // PageContainer,
-  ProDescriptions,
-  ProFormText,
-  ProFormTextArea,
-  ProTable,
-} from '@ant-design/pro-components';
+  cancelWithdrawRule,
+  updateWithdrawRule,
+  withdrawRule,
+} from '@/services/ant-design-pro/deposit';
+import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
-// import type { FormValueType } from './UpdateForm';
-import UpdateForm from './UpdateForm';
 // import styles from './index.less';
 
-/**
- * @en-US Add node
- * @zh-CN 添加节点
- * @param fields
- */
-const handleAdd = async (fields: API.DepositListItem) => {
-  const hide = message.loading('正在添加');
+const handleWithdrawRequest = async (record: any) => {
+  const hide = message.loading('updating');
   try {
-    await addRule({ ...fields });
+    await updateWithdrawRule({
+      uuid: record.uuid.toString(),
+    });
     hide();
-    message.success('Added successfully');
+    location.reload();
+    message.success('Update is successful');
     return true;
   } catch (error) {
-    hide();
-    message.error('Adding failed, please try again!');
+    message.error('error in allowing Deposit request!');
     return false;
   }
 };
 
-/**
- * @en-US Update node
- * @zh-CN 更新节点
- *
- * @param fields
- */
-// const handleUpdate = async (fields: FormValueType) => {
-//   const hide = message.loading('Configuring');
-//   try {
-//     await updateRule({
-//       name: fields.name,
-//       desc: fields.desc,
-//       key: fields.key,
-//     });
-//     hide();
+const handleCancelWithdrawRequest = async (record: any) => {
+  const hide = message.loading('updating');
+  try {
+    await cancelWithdrawRule({
+      uuid: record.uuid.toString(),
+    });
+    hide();
+    location.reload();
+    message.success('Update is successful');
+    return true;
+  } catch (error) {
+    message.error('error in allowing Deposit request!');
+    return false;
+  }
+};
 
-//     message.success('Configuration is successful');
-//     return true;
-//   } catch (error) {
-//     hide();
-//     message.error('Configuration failed, please try again!');
-//     return false;
-//   }
-// };
-
-/**
- *  Delete node
- * @zh-CN 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: API.RuleListItem[]) => {
+const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
@@ -85,22 +61,10 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
 };
 
 const WithdrawList: React.FC = () => {
-  /**
-   * @en-US Pop-up window of new window
-   * @zh-CN 新建窗口的弹窗
-   *  */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /**
-   * @en-US The pop-up window of the distribution update window
-   * @zh-CN 分布更新窗口的弹窗
-   * */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-
   const [showDetail, setShowDetail] = useState<boolean>(false);
-
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
+  const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
 
   /**
    * @en-US International configuration
@@ -108,7 +72,7 @@ const WithdrawList: React.FC = () => {
    * */
   const intl = useIntl();
 
-  const columns: ProColumns<API.RuleListItem>[] = [
+  const columns: ProColumns<API.DepositListItem>[] = [
     {
       title: (
         <FormattedMessage
@@ -184,71 +148,64 @@ const WithdrawList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="status" />,
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
       dataIndex: 'transactionStatus',
-      sorter: true,
       hideInForm: true,
+      valueEnum: {
+        WITHDRAW_REQUEST_COMPLETE: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
+          ),
+          status: 'Processing',
+        },
+        WITHDRAW_REQUEST_PENDING: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
+          ),
+          status: 'Success',
+        },
+        WITHDRAW_REQUEST_CANCEL: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
+          ),
+          status: 'Default',
+        },
+        3: {
+          text: (
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.abnormal"
+              defaultMessage="Abnormal"
+            />
+          ),
+          status: 'Error',
+        },
+      },
     },
-    // {
-    //   title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-    //   dataIndex: 'status',
-    //   hideInForm: true,
-    //   valueEnum: {
-    //     0: {
-    //       text: (
-    //         <FormattedMessage
-    //           id="pages.searchTable.nameStatus.default"
-    //           defaultMessage="Shut down"
-    //         />
-    //       ),
-    //       status: 'Default',
-    //     },
-    //     1: {
-    //       text: (
-    //         <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
-    //       ),
-    //       status: 'Processing',
-    //     },
-    //     2: {
-    //       text: (
-    //         <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
-    //       ),
-    //       status: 'Success',
-    //     },
-    //     3: {
-    //       text: (
-    //         <FormattedMessage
-    //           id="pages.searchTable.nameStatus.abnormal"
-    //           defaultMessage="Abnormal"
-    //         />
-    //       ),
-    //       status: 'Error',
-    //     },
-    //   },
-    // },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption2" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="withdrawConfig"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          <FormattedMessage id="pages.searchTable.withdrawConfig" defaultMessage="확인" />
-        </a>,
-        <a
-          key="withdrawCancel"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          <FormattedMessage id="pages.searchTable.WithdrawCancel" defaultMessage="취소" />
-        </a>,
+        record.transactionStatus === 'WITHDRAW_REQUEST_PENDING' && (
+          <a
+            key="withdrawComplete"
+            onClick={() => {
+              handleWithdrawRequest(record);
+            }}
+          >
+            <FormattedMessage id="pages.searchTable.withdrawConfig" defaultMessage="확인" />
+          </a>
+        ),
+        record.transactionStatus === 'WITHDRAW_REQUEST_COMPLETE' && (
+          <a
+            key="withdrawCancel"
+            onClick={() => {
+              handleCancelWithdrawRequest(record);
+            }}
+          >
+            <FormattedMessage id="pages.searchTable.WithdrawCancel" defaultMessage="취소" />
+          </a>
+        ),
       ],
     },
   ];
@@ -265,17 +222,6 @@ const WithdrawList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        toolBarRender={() => [
-          // <Button
-          //   type="primary"
-          //   key="primary"
-          //   onClick={() => {
-          //     handleModalVisible(true);
-          //   }}
-          // >
-          //   <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
-          // </Button>,
-        ]}
         request={withdrawRule}
         columns={columns}
         rowSelection={{
@@ -297,7 +243,7 @@ const WithdrawList: React.FC = () => {
                   id="pages.searchTable.totalServiceCalls"
                   defaultMessage="Total number of service calls"
                 />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
+                {selectedRowsState.reduce((pre, item) => pre + item.depositRequestAmount!, 0)}{' '}
                 <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
               </span>
             </div>
@@ -323,62 +269,6 @@ const WithdrawList: React.FC = () => {
           </Button>
         </FooterToolbar>
       )}
-      <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: 'New rule',
-        })}
-        width="400px"
-        visible={createModalVisible}
-        onVisibleChange={handleModalVisible}
-        onFinish={async (value) => {
-          const success = await handleAdd(value as API.DepositListItem);
-          if (success) {
-            handleModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="pages.searchTable.ruleName"
-                  defaultMessage="Rule name is required"
-                />
-              ),
-            },
-          ]}
-          width="md"
-          name="name"
-        />
-        <ProFormTextArea width="md" name="desc" />
-      </ModalForm>
-      <UpdateForm
-        onSubmit={async (value) => {
-          const success = await handleUpdate(value);
-          if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
-          }
-        }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          if (!showDetail) {
-            setCurrentRow(undefined);
-          }
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
-      />
-
       <Drawer
         width={600}
         visible={showDetail}

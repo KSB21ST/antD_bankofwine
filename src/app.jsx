@@ -111,7 +111,7 @@ import RightContent from '@/components/RightContent';
 import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
 import { history } from 'umi';
 import defaultSettings from '../config/defaultSettings';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api2';
+import { currentUser as queryCurrentUser } from './services/ant-design-pro/login';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -191,4 +191,3 @@ export const layout = ({ initialState, setInitialState }) => {
     ...initialState?.settings,
   };
 };
-
