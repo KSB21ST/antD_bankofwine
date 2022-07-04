@@ -84,8 +84,7 @@ const DepositList: React.FC = () => {
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="신청인" />,
-      dataIndex: 'toAccountHolder',
-      valueType: 'textarea',
+      dataIndex: 'depositCode',
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleCallNo" defaultMessage="금액" />,

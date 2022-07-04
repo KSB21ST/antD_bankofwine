@@ -14,6 +14,7 @@ export async function depositRule(
   },
   options?: Record<string, any>,
 ) {
+  console.log(params);
   return request<API.DepositList>(`${requestURL}/?${URL.get}=DEPOSIT`, {
     method: 'GET',
     ...(options || {}),
@@ -34,8 +35,7 @@ export async function depositRule(
         const newdata = dataSource.filter((item) => {
           let cnt = 0;
           keyValue.some((key) => {
-            // console.log(item[key].toString())
-            if (params[key] === '' || params[key] === item[key].toString()) {
+            if (params[key] === '' || (item[key] != null && item[key].toString().includes(params[key].toString()))) {
               cnt += 1;
             }
           });
