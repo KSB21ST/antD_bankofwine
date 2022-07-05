@@ -39,8 +39,8 @@
   {
     name: 'list.table-list',
     icon: 'table',
-    path: '/list',
-    component: './TableList',
+    path: '/balance',
+    component: './Balance',
   },
   {
     path: '/',

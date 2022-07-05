@@ -1,5 +1,5 @@
-import Deposit from '@/pages/TableList/components/deposit';
-import Withdraw from '@/pages/TableList/components/withdraw';
+import Deposit from '@/pages/Balance/components/deposit';
+import Withdraw from '@/pages/Balance/components/withdraw';
 import { Box, Button } from '@mui/material';
 import { useState } from 'react';
 

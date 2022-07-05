@@ -73,4 +73,8 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
+  define: {
+    DEV_REQUEST_URL: 'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit',
+    PRO_REQUEST_URL: 'https://bow-back-app.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api',
+  },
 });

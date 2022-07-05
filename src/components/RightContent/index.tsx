@@ -1,9 +1,9 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
 import React from 'react';
 import { SelectLang, useModel } from 'umi';
 import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
+import DBChoice from './DBChoiceDropdown';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
@@ -25,8 +25,8 @@ const GlobalHeaderRight: React.FC = () => {
     <Space className={className}>
       <HeaderSearch
         className={`${styles.action} ${styles.search}`}
-        placeholder="站内搜索"
-        defaultValue="umi ui"
+        placeholder="Subin Kim"
+        defaultValue="Subin Kim"
         options={[
           { label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>, value: 'umi ui' },
           {
@@ -42,19 +42,12 @@ const GlobalHeaderRight: React.FC = () => {
             value: 'Pro Layout',
           },
         ]}
-        // onSearch={value => {
-        //   console.log('input', value);
-        // }}
-      />
-      <span
-        className={styles.action}
-        onClick={() => {
-          window.open('https://pro.ant.design/docs/getting-started');
+        onSearch={value => {
+          console.log('input', value);
         }}
-      >
-        <QuestionCircleOutlined />
-      </span>
+      />
       <Avatar />
+      <DBChoice />
       <SelectLang className={styles.action} />
     </Space>
   );

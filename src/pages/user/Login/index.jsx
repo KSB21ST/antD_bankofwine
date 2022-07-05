@@ -56,7 +56,7 @@ const Login = () => {
         if (!history) return;
         const { query } = history.location;
         const { redirect } = query;
-        history.push(redirect || '/list');
+        history.push(redirect || '/balance');
         return;
       }
 
