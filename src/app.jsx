@@ -4,7 +4,6 @@ import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
 import { history } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/login';
-import { useState, useCallback } from 'react';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -41,7 +40,7 @@ export async function getInitialState() {
       settings: defaultSettings,
     };
   }
-  
+
   return {
     fetchUserInfo,
     settings: defaultSettings,
@@ -71,7 +70,7 @@ export const layout = ({ initialState, setInitialState }) => {
           {!props.location?.pathname?.includes('/login') && (
             <SettingDrawer
               disableUrlParams
-              enableDarkTheme 
+              enableDarkTheme
               settings={initialState?.settings}
               onSettingChange={(settings) => {
                 setInitialState((preInitialState) => ({ ...preInitialState, settings }));

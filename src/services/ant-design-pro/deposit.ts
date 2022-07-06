@@ -14,7 +14,6 @@ export async function depositRule(
   },
   options?: Record<string, any>,
 ) {
-  console.log(params);
   return request<API.DepositList>(`${requestURL}/?${URL.get}=DEPOSIT`, {
     method: 'GET',
     ...(options || {}),
@@ -26,16 +25,30 @@ export async function depositRule(
         return;
       }
       data.transactions.forEach((val: API.DepositListItem) => {
+        if (val.transactionExpiryDt != undefined) {
+          const tDate = new Date(val.transactionExpiryDt);
+          tDate.setHours(tDate.getHours() - 9);
+          val.transactionExpiryDt = tDate;
+        }
+        if (val.transactionRequestAt != undefined) {
+          const tDate = new Date(val.transactionRequestAt);
+          tDate.setHours(tDate.getHours() - 9);
+          val.transactionRequestAt = tDate;
+        }
         dataSource.push(val);
       });
       const keyValue = Object.keys(params).filter(
         (value) => value != 'current' && value != 'pageSize' && params[value] != undefined,
       );
+
       if (keyValue.length > 0) {
         const newdata = dataSource.filter((item) => {
           let cnt = 0;
           keyValue.some((key) => {
-            if (params[key] === '' || (item[key] != null && item[key].toString().includes(params[key].toString()))) {
+            if (
+              params[key] === '' ||
+              (item[key] != null && item[key].toString().includes(params[key].toString()))
+            ) {
               cnt += 1;
             }
           });
@@ -82,6 +95,16 @@ export async function withdrawRule(
         return;
       }
       data.transactions.forEach((val: API.DepositListItem) => {
+        if (val.transactionExpiryDt != undefined) {
+          const tDate = new Date(val.transactionExpiryDt);
+          tDate.setHours(tDate.getHours() - 9);
+          val.transactionExpiryDt = tDate;
+        }
+        if (val.transactionRequestAt != undefined) {
+          const tDate = new Date(val.transactionRequestAt);
+          tDate.setHours(tDate.getHours() - 9);
+          val.transactionRequestAt = tDate;
+        }
         dataSource.push(val);
       });
       const keyValue = Object.keys(params).filter(

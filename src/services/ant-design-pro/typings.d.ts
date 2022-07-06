@@ -60,9 +60,9 @@ declare namespace API {
     depositRequestAmount?: number;
     depositAmount?: number;
     transactionStatus?: string;
-    transactionRequestAt?: string;
-    transactionExpiryDt?: string;
-    transactionApproveAt?: string;
+    transactionRequestAt?: string | Date;
+    transactionExpiryDt?: string | Date;
+    transactionApproveAt?: string | Date;
     depositAt?: string;
     fromAccountHolder?: string;
     toAccountHolder?: string;

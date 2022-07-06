@@ -6,6 +6,7 @@ import { Button, Drawer, Input, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
+// import { useModel } from 'umi';
 
 const handleDepositRequest = async (record: any) => {
   const hide = message.loading('updating');
@@ -192,6 +193,12 @@ const DepositList: React.FC = () => {
         ],
     },
   ];
+
+  // const { db } = useModel('dbchoice', (ret) => ({
+  //   db: ret.dbchoice,
+  //   changedbtoDEV: ret.changeDBtoDEV,
+  //   changedbtoPROD: ret.changeDBtoPROD,
+  // }));
 
   return (
     <div>
