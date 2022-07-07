@@ -3,7 +3,7 @@ import { depositRule, updateDepositRule } from '@/services/ant-design-pro/deposi
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
 
@@ -30,18 +30,12 @@ const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   }
 };
 
-type DepositListProps = {
-  isDev: string;
-};
-
-const DepositList: React.FC<DepositListProps> = (props) => {
+const DepositList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
-  // const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
-  const [changeTable, setchTable] = useState("DEV");
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -200,27 +194,6 @@ const DepositList: React.FC<DepositListProps> = (props) => {
     },
   ];
 
-  useEffect(() => {
-    setchTable(props.isDev);
-    console.log("useEffect");
-    async function getDepositValue(){
-      await depositRule({isDev: props.isDev})
-      .then((response) => {
-        const dataSource: API.DepositListItem[] = [];
-        const data = response?.data;
-        if (data == undefined) {
-          return;
-        }
-        data.forEach((val) => {
-          dataSource.push(val);
-        })
-        setTableListDataSource(dataSource);
-        console.log("total: ", dataSource.length);
-      })
-    }
-    getDepositValue();
-  }, [props.isDev, changeTable]);
-
   return (
     <div>
       <ProTable<API.DepositListItem, API.PageParams>
@@ -233,24 +206,14 @@ const DepositList: React.FC<DepositListProps> = (props) => {
         search={{
           labelWidth: 120,
         }}
-        request={async(params) => {
-          const result = await depositRule({...params, isDev: props.isDev});
-          console.log("is dev, console log data: ", result.data.length, result.total);
-          // setchTable(1-changeTable);
-          return {
-            data: result.data,
-            success: true
-          };
-        }}
-        // dataSource={tableListDataSource}
+        request={depositRule}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
-        // className={styles.protable}
-        className={changeTable}
+        className={styles.protable}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

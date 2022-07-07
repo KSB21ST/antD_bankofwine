@@ -7,9 +7,8 @@ import {
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
-// import styles from './index.less';
 
 const handleWithdrawRequest = async (record: any) => {
   const hide = message.loading('updating');
@@ -60,16 +59,11 @@ const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   }
 };
 
-type DepositListProps = {
-  isDev: string;
-};
-
-const WithdrawList: React.FC<DepositListProps> = (props) => {
+const WithdrawList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
-  const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
 
   /**
    * @en-US International configuration
@@ -215,25 +209,6 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
     },
   ];
 
-
-  useEffect(() => {
-    async function getWithdrawValue(){
-      await withdrawRule({isDev: props.isDev})
-      .then((response) => {
-        const dataSource: API.DepositListItem[] = [];
-        const data = response?.data;
-        if (data == undefined) {
-          return;
-        }
-        data.forEach((val) => {
-          dataSource.push(val);
-        })
-        setTableListDataSource(dataSource);
-      })
-    }
-    getWithdrawValue();
-  }, [props.isDev]);
-
   return (
     <div>
       <ProTable<API.DepositListItem, API.PageParams>
@@ -246,7 +221,7 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
         search={{
           labelWidth: 120,
         }}
-        dataSource={tableListDataSource}
+        request={withdrawRule}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {

@@ -3,7 +3,7 @@ import React from 'react';
 import { SelectLang, useModel } from 'umi';
 import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
-import DBChoice from './DBChoiceDropdown';
+// import DBChoice from './DBChoiceDropdown';
 import styles from './index.less';
 
 export type SiderTheme = 'light' | 'dark';
@@ -42,12 +42,12 @@ const GlobalHeaderRight: React.FC = () => {
             value: 'Pro Layout',
           },
         ]}
-        onSearch={value => {
+        onSearch={(value) => {
           console.log('input', value);
         }}
       />
       <Avatar />
-      <DBChoice />
+      {/* <DBChoice /> */}
       <SelectLang className={styles.action} />
     </Space>
   );
