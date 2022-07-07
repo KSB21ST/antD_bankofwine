@@ -3,26 +3,9 @@ import { depositRule, updateDepositRule } from '@/services/ant-design-pro/deposi
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
-// import { useModel } from 'umi';
-
-const handleDepositRequest = async (record: any) => {
-  const hide = message.loading('updating');
-  try {
-    await updateDepositRule({
-      uuid: record.uuid.toString(),
-    });
-    hide();
-    location.reload();
-    message.success('Update is successful');
-    return true;
-  } catch (error) {
-    message.error('error in allowing Deposit request!');
-    return false;
-  }
-};
 
 /**
  *  Delete node
@@ -47,19 +30,76 @@ const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   }
 };
 
-const DepositList: React.FC = () => {
+type DepositListProps = {
+  isDev: string;
+};
+
+const DepositList: React.FC<DepositListProps> = (props) => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
+  // const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
+  const [changeTable, setchTable] = useState("DEV");
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
   const intl = useIntl();
 
+  const handleDepositRequest = async (record: any) => {
+    const hide = message.loading('updating');
+    try {
+      await updateDepositRule({
+        uuid: record.uuid.toString(),
+        isDev: props.isDev,
+      });
+      hide();
+      location.reload();
+      message.success('Update is successful');
+      return true;
+    } catch (error) {
+      message.error('error in allowing Deposit request!');
+      return false;
+    }
+  };
+
   const columns: ProColumns<API.DepositListItem>[] = [
+    {
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      dataIndex: 'transactionStatus',
+      hideInForm: true,
+      valueEnum: {
+        DEPOSIT_REQUEST_COMPLETE: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
+          ),
+          status: 'Processing',
+        },
+        DEPOSIT_REQUEST_PENDING: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
+          ),
+          status: 'Success',
+        },
+        DEPOSIT_REQUEST_CANCEL: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
+          ),
+          status: 'Default',
+        },
+        3: {
+          text: (
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.abnormal"
+              defaultMessage="abnormal"
+            />
+          ),
+          status: 'Error',
+        },
+      },
+    },
     {
       title: (
         <FormattedMessage
@@ -142,40 +182,6 @@ const DepositList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'transactionStatus',
-      hideInForm: true,
-      valueEnum: {
-        DEPOSIT_REQUEST_COMPLETE: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
-          ),
-          status: 'Processing',
-        },
-        DEPOSIT_REQUEST_PENDING: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
-          ),
-          status: 'Success',
-        },
-        DEPOSIT_REQUEST_CANCEL: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
-          ),
-          status: 'Default',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="abnormal"
-            />
-          ),
-          status: 'Error',
-        },
-      },
-    },
-    {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="입금 확인" />,
       dataIndex: 'option',
       valueType: 'option',
@@ -194,11 +200,26 @@ const DepositList: React.FC = () => {
     },
   ];
 
-  // const { db } = useModel('dbchoice', (ret) => ({
-  //   db: ret.dbchoice,
-  //   changedbtoDEV: ret.changeDBtoDEV,
-  //   changedbtoPROD: ret.changeDBtoPROD,
-  // }));
+  useEffect(() => {
+    setchTable(props.isDev);
+    console.log("useEffect");
+    async function getDepositValue(){
+      await depositRule({isDev: props.isDev})
+      .then((response) => {
+        const dataSource: API.DepositListItem[] = [];
+        const data = response?.data;
+        if (data == undefined) {
+          return;
+        }
+        data.forEach((val) => {
+          dataSource.push(val);
+        })
+        setTableListDataSource(dataSource);
+        console.log("total: ", dataSource.length);
+      })
+    }
+    getDepositValue();
+  }, [props.isDev, changeTable]);
 
   return (
     <div>
@@ -212,14 +233,24 @@ const DepositList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={depositRule}
+        request={async(params) => {
+          const result = await depositRule({...params, isDev: props.isDev});
+          console.log("is dev, console log data: ", result.data.length, result.total);
+          // setchTable(1-changeTable);
+          return {
+            data: result.data,
+            success: true
+          };
+        }}
+        // dataSource={tableListDataSource}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
-        className={styles.protable}
+        // className={styles.protable}
+        className={changeTable}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

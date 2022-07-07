@@ -7,7 +7,7 @@ import {
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 // import styles from './index.less';
 
@@ -60,11 +60,16 @@ const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   }
 };
 
-const WithdrawList: React.FC = () => {
+type DepositListProps = {
+  isDev: string;
+};
+
+const WithdrawList: React.FC<DepositListProps> = (props) => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
+  const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
 
   /**
    * @en-US International configuration
@@ -210,6 +215,25 @@ const WithdrawList: React.FC = () => {
     },
   ];
 
+
+  useEffect(() => {
+    async function getWithdrawValue(){
+      await withdrawRule({isDev: props.isDev})
+      .then((response) => {
+        const dataSource: API.DepositListItem[] = [];
+        const data = response?.data;
+        if (data == undefined) {
+          return;
+        }
+        data.forEach((val) => {
+          dataSource.push(val);
+        })
+        setTableListDataSource(dataSource);
+      })
+    }
+    getWithdrawValue();
+  }, [props.isDev]);
+
   return (
     <div>
       <ProTable<API.DepositListItem, API.PageParams>
@@ -222,7 +246,7 @@ const WithdrawList: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={withdrawRule}
+        dataSource={tableListDataSource}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -278,15 +302,15 @@ const WithdrawList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.name && (
+        {currentRow?.uuid && (
           <ProDescriptions<API.DepositListItem>
             column={2}
-            title={currentRow?.name}
+            title={currentRow?.uuid}
             request={async () => ({
               data: currentRow || {},
             })}
             params={{
-              id: currentRow?.name,
+              id: currentRow?.uuid,
             }}
             columns={columns as ProDescriptionsItemProps<API.DepositListItem>[]}
           />

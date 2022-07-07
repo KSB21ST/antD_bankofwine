@@ -1,7 +1,8 @@
 import Deposit from '@/pages/Balance/components/deposit';
 import Withdraw from '@/pages/Balance/components/withdraw';
 import { Box, Button } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useModel } from 'umi';
 
 export const Dashboard = () => {
   const [selectDeposit, setDeposit] = useState(true);
@@ -13,6 +14,16 @@ export const Dashboard = () => {
       setDeposit(true);
     }
   };
+
+  const { db } = useModel('dbchoice', (ret) => ({
+    db: ret.dbchoice,
+    changedbtoDEV: ret.changeDBtoDEV,
+    changedbtoPROD: ret.changeDBtoPROD,
+  }));
+
+  useEffect(() => {
+
+  }, [db]);
 
   return (
     <div>
@@ -47,8 +58,8 @@ export const Dashboard = () => {
           </Box>
         </Box>
       )}
-      {selectDeposit && <Deposit />}
-      {!selectDeposit && <Withdraw />}
+      {selectDeposit && <Deposit isDev={db} />}
+      {!selectDeposit && <Withdraw isDev={db}/>}
     </div>
   );
 };
