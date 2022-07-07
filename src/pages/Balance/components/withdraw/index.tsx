@@ -79,6 +79,40 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
 
   const columns: ProColumns<API.DepositListItem>[] = [
     {
+      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      dataIndex: 'transactionStatus',
+      hideInForm: true,
+      valueEnum: {
+        WITHDRAW_REQUEST_COMPLETE: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
+          ),
+          status: 'Processing',
+        },
+        WITHDRAW_REQUEST_PENDING: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
+          ),
+          status: 'Success',
+        },
+        WITHDRAW_REQUEST_CANCEL: {
+          text: (
+            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
+          ),
+          status: 'Default',
+        },
+        3: {
+          text: (
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.abnormal"
+              defaultMessage="Abnormal"
+            />
+          ),
+          status: 'Error',
+        },
+      },
+    },
+    {
       title: (
         <FormattedMessage
           id="pages.searchTable.updateForm.ruleName.nameLabel"
@@ -131,7 +165,7 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
         />
       ),
       sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'transactionRequestAt',
       valueType: 'dateTime',
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
@@ -150,40 +184,6 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
           );
         }
         return defaultRender(item);
-      },
-    },
-    {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
-      dataIndex: 'transactionStatus',
-      hideInForm: true,
-      valueEnum: {
-        WITHDRAW_REQUEST_COMPLETE: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="Complete" />
-          ),
-          status: 'Processing',
-        },
-        WITHDRAW_REQUEST_PENDING: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Pending" />
-          ),
-          status: 'Success',
-        },
-        WITHDRAW_REQUEST_CANCEL: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Cancelled" />
-          ),
-          status: 'Default',
-        },
-        3: {
-          text: (
-            <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
-              defaultMessage="Abnormal"
-            />
-          ),
-          status: 'Error',
-        },
       },
     },
     {

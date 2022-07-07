@@ -40,7 +40,7 @@ const DepositList: React.FC<DepositListProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
-  // const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
+  const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
   const [changeTable, setchTable] = useState("DEV");
   /**
    * @en-US International configuration
@@ -136,7 +136,7 @@ const DepositList: React.FC<DepositListProps> = (props) => {
     {
       title: <FormattedMessage id="pages.searchTable.titleUpdatedAt" defaultMessage="신청일시" />,
       sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'transactionRequestAt',
       valueType: 'dateTime',
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');
