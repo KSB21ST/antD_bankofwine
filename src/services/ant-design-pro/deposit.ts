@@ -61,6 +61,27 @@ export async function proDepositRule(
           success: true,
         };
         return result;
+      } else if (params.transactionStatus === undefined) {
+        const newdata = dataSource.sort(function (a, b) {
+          const nameA = a.transactionStatus.toUpperCase();
+          const nameB = b.transactionStatus.toUpperCase();
+          if (nameA < nameB) {
+            console.log(nameA, nameB, -1);
+            return 1;
+          }
+          if (nameA > nameB) {
+            console.log(nameA, nameB, 1);
+            return -1;
+          }
+          return 0;
+        });
+        console.log(newdata);
+        const result = {
+          data: newdata,
+          total: newdata.length,
+          success: true,
+        };
+        return result;
       }
 
       const result = {
@@ -124,6 +145,27 @@ export async function devDepositRule(
           });
           return cnt === keyValue.length;
         });
+        const result = {
+          data: newdata,
+          total: newdata.length,
+          success: true,
+        };
+        return result;
+      } else if (params.transactionStatus === undefined) {
+        const newdata = dataSource.sort(function (a, b) {
+          const nameA = a.transactionStatus.toUpperCase();
+          const nameB = b.transactionStatus.toUpperCase();
+          if (nameA < nameB) {
+            console.log(nameA, nameB, -1);
+            return 1;
+          }
+          if (nameA > nameB) {
+            console.log(nameA, nameB, 1);
+            return -1;
+          }
+          return 0;
+        });
+        console.log(newdata);
         const result = {
           data: newdata,
           total: newdata.length,
@@ -194,6 +236,27 @@ export async function devWithdrawRule(
           });
           return cnt === keyValue.length;
         });
+        const result = {
+          data: newdata,
+          total: newdata.length,
+          success: true,
+        };
+        return result;
+      } else if (params.transactionStatus === undefined) {
+        const newdata = dataSource.sort(function (a, b) {
+          const nameA = a.transactionStatus.toUpperCase();
+          const nameB = b.transactionStatus.toUpperCase();
+          if (nameA < nameB) {
+            console.log(nameA, nameB, -1);
+            return 1;
+          }
+          if (nameA > nameB) {
+            console.log(nameA, nameB, 1);
+            return -1;
+          }
+          return 0;
+        });
+        console.log(newdata);
         const result = {
           data: newdata,
           total: newdata.length,
