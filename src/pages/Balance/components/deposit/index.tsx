@@ -1,9 +1,13 @@
 import { removeRule } from '@/services/ant-design-pro/api';
-import { depositRule, updateDepositRule } from '@/services/ant-design-pro/deposit';
+import {
+  devDepositRule,
+  proDepositRule,
+  updateDepositRule,
+} from '@/services/ant-design-pro/deposit';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
 
@@ -40,8 +44,7 @@ const DepositList: React.FC<DepositListProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
-  const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
-  const [changeTable, setchTable] = useState("DEV");
+  const [changeTableFunc, setchTable] = useState(() => devDepositRule);
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
@@ -56,8 +59,7 @@ const DepositList: React.FC<DepositListProps> = (props) => {
         isDev: props.isDev,
       });
       hide();
-      location.reload();
-      message.success('Update is successful');
+      message.success('Refresh the table below');
       return true;
     } catch (error) {
       message.error('error in allowing Deposit request!');
@@ -201,25 +203,13 @@ const DepositList: React.FC<DepositListProps> = (props) => {
   ];
 
   useEffect(() => {
-    setchTable(props.isDev);
-    console.log("useEffect");
-    async function getDepositValue(){
-      await depositRule({isDev: props.isDev})
-      .then((response) => {
-        const dataSource: API.DepositListItem[] = [];
-        const data = response?.data;
-        if (data == undefined) {
-          return;
-        }
-        data.forEach((val) => {
-          dataSource.push(val);
-        })
-        setTableListDataSource(dataSource);
-        console.log("total: ", dataSource.length);
-      })
+    if (props.isDev === 'PROD') {
+      setchTable(() => proDepositRule);
+    } else {
+      setchTable(() => devDepositRule);
     }
-    getDepositValue();
-  }, [props.isDev, changeTable]);
+    // message.info('Refresh the table below');
+  }, [props.isDev]);
 
   return (
     <div>
@@ -233,24 +223,14 @@ const DepositList: React.FC<DepositListProps> = (props) => {
         search={{
           labelWidth: 120,
         }}
-        request={async(params) => {
-          const result = await depositRule({...params, isDev: props.isDev});
-          console.log("is dev, console log data: ", result.data.length, result.total);
-          // setchTable(1-changeTable);
-          return {
-            data: result.data,
-            success: true
-          };
-        }}
-        // dataSource={tableListDataSource}
+        request={changeTableFunc}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
-        // className={styles.protable}
-        className={changeTable}
+        className={styles.protable}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

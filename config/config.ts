@@ -1,6 +1,6 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
 import { join } from 'path';
+import { defineConfig } from 'umi';
 
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
@@ -43,6 +43,7 @@ export default defineConfig({
     // 只有设置为 variable， 才能使用 configProvide 动态设置主色调
     // https://ant.design/docs/react/customize-theme-variable-cn
     'root-entry-name': 'variable',
+    primaryColor: '#25b864',
   },
   // esbuild is father build tools
   // https://umijs.org/plugins/plugin-esbuild
@@ -74,8 +75,9 @@ export default defineConfig({
   webpack5: {},
   exportStatic: {},
   define: {
-    DEV_REQUEST_URL: 'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit',
-    PRO_REQUEST_URL: 'https://bow-back-app.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit',
+    DEV_REQUEST_URL:
+      'https://bow-back-app-dev.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit',
+    PRO_REQUEST_URL:
+      'https://bow-back-app.n55jsrkd83734.ap-northeast-2.cs.amazonlightsail.com/api/admin/deposit',
   },
 });
-

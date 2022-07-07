@@ -1,47 +1,15 @@
 import { removeRule } from '@/services/ant-design-pro/api';
 import {
   cancelWithdrawRule,
+  devWithdrawRule,
+  proWithdrawRule,
   updateWithdrawRule,
-  withdrawRule,
 } from '@/services/ant-design-pro/deposit';
 import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
 import { FooterToolbar, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer, Input, message } from 'antd';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
-// import styles from './index.less';
-
-const handleWithdrawRequest = async (record: any) => {
-  const hide = message.loading('updating');
-  try {
-    await updateWithdrawRule({
-      uuid: record.uuid.toString(),
-    });
-    hide();
-    location.reload();
-    message.success('Update is successful');
-    return true;
-  } catch (error) {
-    message.error('error in allowing Deposit request!');
-    return false;
-  }
-};
-
-const handleCancelWithdrawRequest = async (record: any) => {
-  const hide = message.loading('updating');
-  try {
-    await cancelWithdrawRule({
-      uuid: record.uuid.toString(),
-    });
-    hide();
-    location.reload();
-    message.success('Update is successful');
-    return true;
-  } catch (error) {
-    message.error('error in allowing Deposit request!');
-    return false;
-  }
-};
 
 const handleRemove = async (selectedRows: API.DepositListItem[]) => {
   const hide = message.loading('正在删除');
@@ -69,13 +37,45 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.DepositListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.DepositListItem[]>([]);
-  const [tableListDataSource, setTableListDataSource] = useState<API.DepositListItem[]>([]);
+  const [changeTableFunc, setchTable] = useState(() => devWithdrawRule);
 
   /**
    * @en-US International configuration
    * @zh-CN 国际化配置
    * */
   const intl = useIntl();
+
+  const handleWithdrawRequest = async (record: any) => {
+    const hide = message.loading('updating');
+    try {
+      await updateWithdrawRule({
+        uuid: record.uuid.toString(),
+        isDev: props.isDev,
+      });
+      hide();
+      message.success('Refresh the table below');
+      return true;
+    } catch (error) {
+      message.error('error in allowing Deposit request!');
+      return false;
+    }
+  };
+
+  const handleCancelWithdrawRequest = async (record: any) => {
+    const hide = message.loading('updating');
+    try {
+      await cancelWithdrawRule({
+        uuid: record.uuid.toString(),
+        isDev: props.isDev,
+      });
+      hide();
+      message.success('Refresh the table below');
+      return true;
+    } catch (error) {
+      message.error('error in allowing Deposit request!');
+      return false;
+    }
+  };
 
   const columns: ProColumns<API.DepositListItem>[] = [
     {
@@ -215,23 +215,13 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
     },
   ];
 
-
   useEffect(() => {
-    async function getWithdrawValue(){
-      await withdrawRule({isDev: props.isDev})
-      .then((response) => {
-        const dataSource: API.DepositListItem[] = [];
-        const data = response?.data;
-        if (data == undefined) {
-          return;
-        }
-        data.forEach((val) => {
-          dataSource.push(val);
-        })
-        setTableListDataSource(dataSource);
-      })
+    if (props.isDev === 'PROD') {
+      setchTable(() => proWithdrawRule);
+    } else {
+      setchTable(() => devWithdrawRule);
     }
-    getWithdrawValue();
+    // message.info('Refresh the table below');
   }, [props.isDev]);
 
   return (
@@ -246,7 +236,7 @@ const WithdrawList: React.FC<DepositListProps> = (props) => {
         search={{
           labelWidth: 120,
         }}
-        dataSource={tableListDataSource}
+        request={changeTableFunc}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
