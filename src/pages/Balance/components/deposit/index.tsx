@@ -50,7 +50,6 @@ const DepositList: React.FC = () => {
         isDev: props.isDev,
       });
       hide();
-      location.reload();
       message.success('Update is successful');
       return true;
     } catch (error) {
@@ -130,7 +129,7 @@ const DepositList: React.FC = () => {
     {
       title: <FormattedMessage id="pages.searchTable.titleUpdatedAt" defaultMessage="신청일시" />,
       sorter: true,
-      dataIndex: 'updatedAt',
+      dataIndex: 'transactionRequestAt',
       valueType: 'dateTime',
       renderFormItem: (item, { defaultRender, ...rest }, form) => {
         const status = form.getFieldValue('status');

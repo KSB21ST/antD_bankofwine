@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { request } from 'umi';
 
 const URL = {
@@ -25,13 +26,11 @@ export async function depositRule(
       }
       data.transactions.forEach((val: API.DepositListItem) => {
         if (val.transactionExpiryDt != undefined) {
-          const tDate = new Date(val.transactionExpiryDt);
-          tDate.setHours(tDate.getHours() - 9);
+          const tDate = moment(val.transactionExpiryDt);
           val.transactionExpiryDt = tDate;
         }
         if (val.transactionRequestAt != undefined) {
-          const tDate = new Date(val.transactionRequestAt);
-          tDate.setHours(tDate.getHours() - 9);
+          const tDate = moment(val.transactionRequestAt);
           val.transactionRequestAt = tDate;
         }
         dataSource.push(val);

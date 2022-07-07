@@ -1,5 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
+import moment from 'moment';
 
 declare namespace API {
   type CurrentUser = {
@@ -60,9 +61,9 @@ declare namespace API {
     depositRequestAmount?: number;
     depositAmount?: number;
     transactionStatus?: string;
-    transactionRequestAt?: string | Date;
-    transactionExpiryDt?: string | Date;
-    transactionApproveAt?: string | Date;
+    transactionRequestAt?: string | Date | moment.Moment;
+    transactionExpiryDt?: string | Date | moment.Moment;
+    transactionApproveAt?: string | Date | moment.Moment;
     depositAt?: string;
     fromAccountHolder?: string;
     toAccountHolder?: string;
